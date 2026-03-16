@@ -87,7 +87,7 @@ export default function Menu() {
 
   return (
     <div className="container py-12">
-      <h1 className="text-4xl font-bold text-[#1e7e34] mb-12">메뉴</h1>
+      <h1 className="text-4xl font-bold text-[#1e7e34] mb-12">Menu</h1>
 
       <div className="flex gap-8">
         {/* Main Content */}
@@ -134,13 +134,13 @@ export default function Menu() {
                     <span className="text-xl font-bold text-[#1e7e34]">
                       ${item.price}
                     </span>
-                    <Button
+                      <Button
                       size="sm"
                       className="bg-[#1e7e34] hover:bg-[#0d5a1f]"
                       onClick={() => addToCart(item)}
                     >
                       <ShoppingCart size={16} className="mr-1" />
-                      추가
+                      Add
                     </Button>
                   </div>
                 </div>
@@ -153,11 +153,11 @@ export default function Menu() {
         <div className="w-80 hidden lg:block">
           <Card className="sticky top-20 p-6">
             <h2 className="text-2xl font-bold text-[#1e7e34] mb-4">
-              장바구니
+              Shopping Cart
             </h2>
             {cart.length === 0 ? (
               <p className="text-gray-500 text-center py-8">
-                장바구니가 비어있습니다
+                Your cart is empty
               </p>
             ) : (
               <>
@@ -195,9 +195,9 @@ export default function Menu() {
                     </div>
                   ))}
                 </div>
-                <div className="border-t pt-4">
+                  <div className="border-t pt-4">
                   <div className="flex justify-between mb-4">
-                    <span className="font-semibold">총액:</span>
+                    <span className="font-semibold">Total:</span>
                     <span className="text-xl font-bold text-[#1e7e34]">
                       ${totalPrice.toFixed(2)}
                     </span>
@@ -206,7 +206,7 @@ export default function Menu() {
                     className="w-full bg-[#1e7e34] hover:bg-[#0d5a1f]"
                     onClick={handleCheckout}
                   >
-                    주문하기
+                    Checkout
                   </Button>
                 </div>
               </>

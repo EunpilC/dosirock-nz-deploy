@@ -30,7 +30,7 @@ export default function Contact() {
 
     try {
       await createInquiryMutation.mutateAsync(formData);
-      toast.success("문의가 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.");
+      toast.success("Your inquiry has been received. We will contact you soon.");
       setFormData({
         name: "",
         email: "",
@@ -39,7 +39,7 @@ export default function Contact() {
         message: "",
       });
     } catch (error) {
-      toast.error("문의 접수 중 오류가 발생했습니다");
+      toast.error("An error occurred while submitting your inquiry");
     } finally {
       setIsSubmitting(false);
     }
@@ -47,7 +47,7 @@ export default function Contact() {
 
   return (
     <div className="container py-12">
-      <h1 className="text-4xl font-bold text-[#1e7e34] mb-12">문의하기</h1>
+      <h1 className="text-4xl font-bold text-[#1e7e34] mb-12">Contact Us</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Contact Form */}
@@ -57,7 +57,7 @@ export default function Contact() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold mb-2">
-                    이름 *
+                    Name *
                   </label>
                   <input
                     type="text"
@@ -66,12 +66,12 @@ export default function Contact() {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e7e34]"
-                    placeholder="이름을 입력해주세요"
+                    placeholder="Enter your name"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold mb-2">
-                    이메일 *
+                    Email *
                   </label>
                   <input
                     type="email"
@@ -80,14 +80,14 @@ export default function Contact() {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e7e34]"
-                    placeholder="이메일을 입력해주세요"
+                    placeholder="Enter your email"
                   />
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-semibold mb-2">
-                  전화번호
+                  Phone
                 </label>
                 <input
                   type="tel"
@@ -95,13 +95,13 @@ export default function Contact() {
                   value={formData.phone}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e7e34]"
-                  placeholder="전화번호를 입력해주세요"
+                  placeholder="Enter your phone number"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold mb-2">
-                  제목 *
+                  Subject *
                 </label>
                 <input
                   type="text"
@@ -110,13 +110,13 @@ export default function Contact() {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e7e34]"
-                  placeholder="문의 제목을 입력해주세요"
+                  placeholder="Enter your subject"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold mb-2">
-                  메시지 *
+                  Message *
                 </label>
                 <textarea
                   name="message"
@@ -125,7 +125,7 @@ export default function Contact() {
                   required
                   rows={6}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e7e34]"
-                  placeholder="문의 내용을 입력해주세요"
+                  placeholder="Enter your message"
                 />
               </div>
 
@@ -134,7 +134,7 @@ export default function Contact() {
                 className="w-full bg-[#1e7e34] hover:bg-[#0d5a1f] text-white font-bold py-2"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "전송 중..." : "문의 전송"}
+                {isSubmitting ? "Sending..." : "Send Inquiry"}
               </Button>
             </form>
           </Card>
@@ -146,17 +146,17 @@ export default function Contact() {
           <Card className="p-6">
             <h3 className="text-lg font-bold text-[#1e7e34] mb-4 flex items-center gap-2">
               <Clock size={20} />
-              영업시간
+              Hours
             </h3>
             <div className="space-y-2 text-sm text-gray-600">
               <p>
-                <span className="font-semibold">월-금:</span> 11:00 - 20:00
+                <span className="font-semibold">Mon-Fri:</span> 11:00 - 20:00
               </p>
               <p>
-                <span className="font-semibold">토:</span> 11:00 - 19:00
+                <span className="font-semibold">Sat:</span> 11:00 - 19:00
               </p>
               <p>
-                <span className="font-semibold">일:</span> 휴무
+                <span className="font-semibold">Sun:</span> Closed
               </p>
             </div>
           </Card>
@@ -165,7 +165,7 @@ export default function Contact() {
           <Card className="p-6">
             <h3 className="text-lg font-bold text-[#1e7e34] mb-4 flex items-center gap-2">
               <Phone size={20} />
-              전화
+              Phone
             </h3>
             <a
               href="tel:09-200-0772"
@@ -179,7 +179,7 @@ export default function Contact() {
           <Card className="p-6">
             <h3 className="text-lg font-bold text-[#1e7e34] mb-4 flex items-center gap-2">
               <Mail size={20} />
-              이메일
+              Email
             </h3>
             <a
               href="mailto:dosirocknz@gmail.com"
@@ -193,7 +193,7 @@ export default function Contact() {
           <Card className="p-6">
             <h3 className="text-lg font-bold text-[#1e7e34] mb-4 flex items-center gap-2">
               <MapPin size={20} />
-              위치
+              Location
             </h3>
             <p className="text-sm text-gray-600 mb-4">
               39 Chancery Street<br />
@@ -206,7 +206,7 @@ export default function Contact() {
               rel="noopener noreferrer"
               className="text-[#1e7e34] hover:underline font-semibold text-sm"
             >
-              지도에서 보기
+              View on Map
             </a>
           </Card>
         </div>

@@ -11,7 +11,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-bold mb-4">Dosirock</h3>
             <p className="text-sm text-gray-200">
-              신선한 재료로 만든 한국 도시락을 제공합니다. 건강하고 맛있는 식사를 경험해보세요.
+              Fresh Korean lunch boxes prepared with quality ingredients. Experience healthy and delicious meals.
             </p>
           </div>
 
@@ -19,18 +19,18 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <Clock size={20} />
-              영업시간
+              Hours
             </h4>
             <div className="text-sm text-gray-200 space-y-1">
-              <p>월-금: 11:00 - 20:00</p>
-              <p>토: 11:00 - 19:00</p>
-              <p>일: 휴무</p>
+              <p>Mon-Fri: 11:00 - 20:00</p>
+              <p>Sat: 11:00 - 19:00</p>
+              <p>Sun: Closed</p>
             </div>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">연락처</h4>
+            <h4 className="text-lg font-semibold mb-4">Contact</h4>
             <div className="text-sm text-gray-200 space-y-2">
               <p className="flex items-center gap-2">
                 <Phone size={16} />
@@ -47,7 +47,7 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <MapPin size={20} />
-              위치
+              Location
             </h4>
             <p className="text-sm text-gray-200">
               39 Chancery Street<br />

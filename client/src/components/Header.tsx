@@ -11,11 +11,11 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { label: "홈", href: "/" },
-    { label: "메뉴", href: "/menu" },
-    { label: "주문", href: "/orders" },
-    { label: "갤러리", href: "/gallery" },
-    { label: "문의", href: "/contact" },
+    { label: "Home", href: "/" },
+    { label: "Menu", href: "/menu" },
+    { label: "Orders", href: "/orders" },
+    { label: "Gallery", href: "/gallery" },
+    { label: "Contact", href: "/contact" },
   ];
 
   const isActive = (href: string) => location === href;
@@ -63,7 +63,7 @@ export default function Header() {
               onClick={() => setLocation("/admin")}
               className="hidden sm:inline-flex"
             >
-              관리자
+              Admin
             </Button>
           )}
           {user ? (
@@ -76,7 +76,7 @@ export default function Header() {
                 size="sm"
                 onClick={() => logout()}
               >
-                로그아웃
+                Logout
               </Button>
             </div>
           ) : (
@@ -85,7 +85,7 @@ export default function Header() {
               className="bg-[#1e7e34] hover:bg-[#0d5a1f]"
               onClick={() => (window.location.href = getLoginUrl())}
             >
-              로그인
+              Login
             </Button>
           )}
 
@@ -127,7 +127,7 @@ export default function Header() {
                 }}
                 className="text-left py-2 px-3 rounded text-gray-600 hover:bg-gray-100"
               >
-                관리자
+                Admin
               </button>
             )}
           </div>
