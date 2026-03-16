@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO `order_status` (`statusName`, `displayName`) VALUES \n('pending', 'Pending'),\n('confirmed', 'Confirmed'),\n('preparing', 'Preparing'),\n('ready', 'Ready for Pickup'),\n('completed', 'Completed'),\n('cancelled', 'Cancelled');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user gPxFJrXxNiH1Q3b.root --database k7tfmHu9v4MCGpC6AsHPrQ --execute INSERT INTO `order_status` (`statusName`, `displayName`) VALUES \n('pending', 'Pending'),\n('confirmed', 'Confirmed'),\n('preparing', 'Preparing'),\n('ready', 'Ready for Pickup'),\n('completed', 'Completed'),\n('cancelled', 'Cancelled');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1783
+}
