@@ -132,6 +132,32 @@ export async function updateMenuItem(id: number, data: Partial<InsertMenuItem>) 
   return db.update(menuItems).set(data).where(eq(menuItems.id, id));
 }
 
+export async function deleteMenuItem(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.delete(menuItems).where(eq(menuItems.id, id));
+}
+
+export async function getMenuCategoryById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(menuCategories).where(eq(menuCategories.id, id)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function createMenuCategory(data: InsertMenuCategory) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(menuCategories).values(data);
+  return result;
+}
+
+export async function updateMenuCategory(id: number, data: Partial<InsertMenuCategory>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(menuCategories).set(data).where(eq(menuCategories.id, id));
+}
+
 // Order queries
 export async function createOrder(data: InsertOrder) {
   const db = await getDb();

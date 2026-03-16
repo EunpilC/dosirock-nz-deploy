@@ -70,6 +70,12 @@ export const appRouter = router({
         const { id, ...data } = input;
         return db.updateMenuItem(id, data);
       }),
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        return db.deleteMenuItem(input.id);
+      }),
   }),
 
   // Order routers

@@ -6,6 +6,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import AdminMenuManagement from "./AdminMenuManagement";
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
@@ -68,9 +69,10 @@ export default function AdminDashboard() {
       <h1 className="text-4xl font-bold text-[#1e7e34] mb-12">관리자 대시보드</h1>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="orders">주문 관리</TabsTrigger>
-          <TabsTrigger value="inquiries">문의 관리</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="orders">Orders</TabsTrigger>
+          <TabsTrigger value="inquiries">Inquiries</TabsTrigger>
+          <TabsTrigger value="menu">Menu</TabsTrigger>
         </TabsList>
 
         {/* Orders Tab */}
@@ -165,6 +167,11 @@ export default function AdminDashboard() {
               </table>
             </div>
           </Card>
+        </TabsContent>
+
+        {/* Menu Tab */}
+        <TabsContent value="menu" className="space-y-6">
+          <AdminMenuManagement />
         </TabsContent>
 
         {/* Inquiries Tab */}
