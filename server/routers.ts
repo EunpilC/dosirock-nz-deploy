@@ -5,6 +5,7 @@ import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
 import { TRPCError } from "@trpc/server";
+import { paymentRouter } from "./routers/payment";
 
 export const appRouter = router({
   system: systemRouter,
@@ -189,6 +190,9 @@ export const appRouter = router({
         return db.updateInquiryStatus(input.inquiryId, input.status);
       }),
   }),
+
+  // Payment router
+  payment: paymentRouter,
 });
 
 export type AppRouter = typeof appRouter;

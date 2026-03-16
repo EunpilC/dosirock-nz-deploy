@@ -1,6 +1,6 @@
 import { eq, desc, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, menuCategories, menuItems, orders, orderItems, orderStatus, galleryImages, inquiries, InsertMenuCategory, InsertMenuItem, InsertOrder, InsertOrderItem, InsertGalleryImage, InsertInquiry } from "../drizzle/schema";
+import { InsertUser, users, menuCategories, menuItems, orders, orderItems, orderStatus, galleryImages, inquiries, payments, InsertMenuCategory, InsertMenuItem, InsertOrder, InsertOrderItem, InsertGalleryImage, InsertInquiry, InsertPayment } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -221,4 +221,70 @@ export async function getOrderStatusByName(statusName: string) {
   if (!db) return null;
   const result = await db.select().from(orderStatus).where(eq(orderStatus.statusName, statusName)).limit(1);
   return result.length > 0 ? result[0] : null;
+}
+
+// Payment queries
+export async function createPayment(payment: InsertPayment) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const result = await db.insert(payments).values(payment);
+  return result;
+}
+
+export async function getPaymentByStripeId(stripePaymentIntentId: string) {
+  const db = await getDb();
+  if (!db) {
+    return undefined;
+  }
+
+  const result = await db
+    .select()
+    .from(payments)
+    .where(eq(payments.stripePaymentIntentId, stripePaymentIntentId))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function updatePaymentStatus(
+  stripePaymentIntentId: string,
+  status: string
+) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  await db
+    .update(payments)
+    .set({ status, updatedAt: new Date() })
+    .where(eq(payments.stripePaymentIntentId, stripePaymentIntentId));
+}
+
+export async function getUserPayments(userId: number) {
+  const db = await getDb();
+  if (!db) {
+    return [];
+  }
+
+  return db.select().from(payments).where(eq(payments.userId, userId));
+}
+
+// User Stripe customer ID
+export async function updateUserStripeCustomerId(
+  userId: number,
+  stripeCustomerId: string
+) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  await db
+    .update(users)
+    .set({ stripeCustomerId, updatedAt: new Date() })
+    .where(eq(users.id, userId));
 }

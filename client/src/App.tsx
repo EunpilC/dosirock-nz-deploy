@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import Orders from "./pages/Orders";
+import Checkout from "./pages/Checkout";
 import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -22,15 +23,16 @@ function Router() {
       <Header />
       <main className="flex-1">
         <Switch>
-          <Route path={"/"} component={Home} />
-          <Route path={"/menu"} component={Menu} />
-          <Route path={"/orders"} component={Orders} />
-          <Route path={"/gallery"} component={Gallery} />
-          <Route path={"/contact"} component={Contact} />
+          <Route path="/" component={Home} />
+          <Route path="/menu" component={Menu} />
+          <Route path="/orders" component={Orders} />
+          <Route path="/checkout" component={Checkout} />
+          <Route path="/gallery" component={Gallery} />
+          <Route path="/contact" component={Contact} />
           {user?.role === "admin" && (
-            <Route path={"/admin"} component={AdminDashboard} />
+            <Route path="/admin" component={AdminDashboard} />
           )}
-          <Route path={"/404"} component={NotFound} />
+          <Route path="/404" component={NotFound} />
           {/* Final fallback route */}
           <Route component={NotFound} />
         </Switch>
