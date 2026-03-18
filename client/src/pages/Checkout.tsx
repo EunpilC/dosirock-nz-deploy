@@ -19,22 +19,28 @@ export default function Checkout() {
   const [, setLocation] = useLocation();
   const { user, isAuthenticated } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
   const [orderType, setOrderType] = useState<"pickup" | "delivery">("pickup");
   const [pickupTime, setPickupTime] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [specialRequests, setSpecialRequests] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const { data: locations } = trpc.location.all.useQuery();
   const createCheckoutMutation = trpc.payment.createCheckoutSession.useMutation();
   const createOrderMutation = trpc.order.create.useMutation();
 
   // Load cart from localStorage
-  const loadCart = () => {
+  useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       setCartItems(JSON.parse(savedCart));
     }
-  };
+    // Set default location
+    if (locations && locations.length > 0 && !selectedLocationId) {
+      setSelectedLocationId(locations[0].id);
+    }
+  }, [locations, selectedLocationId]);
 
   // Calculate total
   const calculateTotal = () => {
@@ -45,23 +51,28 @@ export default function Checkout() {
 
   const handleCheckout = async () => {
     if (!isAuthenticated) {
-      toast.error("로그인이 필요합니다");
+      toast.error("Please sign in to checkout");
       setLocation("/");
       return;
     }
 
     if (cartItems.length === 0) {
-      toast.error("장바구니가 비어있습니다");
+      toast.error("Your cart is empty");
+      return;
+    }
+
+    if (!selectedLocationId) {
+      toast.error("Please select a location");
       return;
     }
 
     if (orderType === "delivery" && !deliveryAddress) {
-      toast.error("배달 주소를 입력해주세요");
+      toast.error("Please enter a delivery address");
       return;
     }
 
     if (orderType === "pickup" && !pickupTime) {
-      toast.error("픽업 시간을 선택해주세요");
+      toast.error("Please select a pickup time");
       return;
     }
 
@@ -71,6 +82,7 @@ export default function Checkout() {
       // Create order first
       const totalAmount = calculateTotal();
       const orderResult = await createOrderMutation.mutateAsync({
+        locationId: selectedLocationId,
         orderType,
         items: cartItems.map(item => ({
           menuItemId: item.menuItemId,
@@ -98,170 +110,181 @@ export default function Checkout() {
       setCartItems([]);
 
       // Redirect to Stripe checkout
-      toast.success("결제 페이지로 이동합니다");
-      window.open(checkout.checkoutUrl, "_blank");
+      if (checkout.checkoutUrl) {
+        window.open(checkout.checkoutUrl, "_blank");
+        toast.success("Redirecting to payment...");
+      }
     } catch (error) {
       console.error("Checkout error:", error);
-      toast.error("결제 처리 중 오류가 발생했습니다");
+      toast.error("Failed to process checkout");
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // Load cart on mount
-  const [isLoaded, setIsLoaded] = useState(false);
-  if (!isLoaded) {
-    loadCart();
-    setIsLoaded(true);
+  if (cartItems.length === 0) {
+    return (
+      <div className="container py-12 text-center">
+        <h1 className="text-3xl font-bold text-[#1e7e34] mb-6">Checkout</h1>
+        <p className="text-gray-600 mb-6">Your cart is empty</p>
+        <Button
+          size="lg"
+          className="bg-[#1e7e34] hover:bg-[#0d5a1f]"
+          onClick={() => setLocation("/menu")}
+        >
+          Continue Shopping
+        </Button>
+      </div>
+    );
   }
 
   return (
     <div className="container py-12">
-      <h1 className="text-4xl font-bold text-[#1e7e34] mb-8">주문 결제</h1>
+      <h1 className="text-3xl font-bold text-[#1e7e34] mb-8">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Order Details */}
+        {/* Left Column - Order Details */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Order Type Selection */}
-          <Card className="p-6">
-            <h2 className="text-2xl font-bold text-[#1e7e34] mb-4">
-              주문 유형
-            </h2>
+          {/* Location Selection */}
+          <Card className="p-6 border-2 border-[#1e7e34]">
+            <h2 className="text-xl font-bold text-[#1e7e34] mb-4">Select Location</h2>
             <div className="space-y-3">
-              <label className="flex items-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#1e7e34] transition"
-                style={{ borderColor: orderType === "pickup" ? "#1e7e34" : undefined }}>
+              {locations?.map((location) => (
+                <div
+                  key={location.id}
+                  onClick={() => setSelectedLocationId(location.id)}
+                  className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                    selectedLocationId === location.id
+                      ? "border-[#ffd700] bg-[#ffd700]/10"
+                      : "border-gray-200 hover:border-[#1e7e34]"
+                  }`}
+                >
+                  <h3 className="font-bold text-[#1e7e34]">{location.name}</h3>
+                  <p className="text-sm text-gray-600 mt-1">{location.address}</p>
+                  {location.phone && (
+                    <p className="text-sm text-gray-600">{location.phone}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Order Type */}
+          <Card className="p-6 border-2 border-[#1e7e34]">
+            <h2 className="text-xl font-bold text-[#1e7e34] mb-4">Order Type</h2>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
                   value="pickup"
                   checked={orderType === "pickup"}
-                  onChange={(e) => setOrderType(e.target.value as "pickup")}
+                  onChange={(e) => setOrderType(e.target.value as "pickup" | "delivery")}
                   className="w-4 h-4"
                 />
-                <span className="ml-3 font-semibold">픽업</span>
+                <span className="font-medium">Pickup</span>
               </label>
-              <label className="flex items-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#1e7e34] transition"
-                style={{ borderColor: orderType === "delivery" ? "#1e7e34" : undefined }}>
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
                   value="delivery"
                   checked={orderType === "delivery"}
-                  onChange={(e) => setOrderType(e.target.value as "delivery")}
+                  onChange={(e) => setOrderType(e.target.value as "pickup" | "delivery")}
                   className="w-4 h-4"
                 />
-                <span className="ml-3 font-semibold">배달</span>
+                <span className="font-medium">Delivery</span>
               </label>
             </div>
           </Card>
 
           {/* Pickup Time or Delivery Address */}
-          <Card className="p-6">
-            <h2 className="text-2xl font-bold text-[#1e7e34] mb-4">
-              {orderType === "pickup" ? "픽업 시간" : "배달 주소"}
-            </h2>
-            {orderType === "pickup" ? (
+          {orderType === "pickup" ? (
+            <Card className="p-6 border-2 border-[#1e7e34]">
+              <h2 className="text-xl font-bold text-[#1e7e34] mb-4">Pickup Time</h2>
               <input
                 type="datetime-local"
                 value={pickupTime}
                 onChange={(e) => setPickupTime(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e7e34]"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               />
-            ) : (
+            </Card>
+          ) : (
+            <Card className="p-6 border-2 border-[#1e7e34]">
+              <h2 className="text-xl font-bold text-[#1e7e34] mb-4">Delivery Address</h2>
               <textarea
                 value={deliveryAddress}
                 onChange={(e) => setDeliveryAddress(e.target.value)}
-                placeholder="배달 주소를 입력해주세요"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e7e34]"
+                placeholder="Enter your delivery address"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 rows={3}
               />
-            )}
-          </Card>
+            </Card>
+          )}
 
           {/* Special Requests */}
-          <Card className="p-6">
-            <h2 className="text-2xl font-bold text-[#1e7e34] mb-4">
-              특별 요청사항
-            </h2>
+          <Card className="p-6 border-2 border-[#1e7e34]">
+            <h2 className="text-xl font-bold text-[#1e7e34] mb-4">Special Requests</h2>
             <textarea
               value={specialRequests}
               onChange={(e) => setSpecialRequests(e.target.value)}
-              placeholder="특별한 요청사항이 있으면 입력해주세요 (선택사항)"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e7e34]"
+              placeholder="Any special requests or dietary requirements?"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               rows={3}
             />
           </Card>
         </div>
 
-        {/* Order Summary */}
+        {/* Right Column - Order Summary */}
         <div>
-          <Card className="p-6 sticky top-20">
-            <h2 className="text-2xl font-bold text-[#1e7e34] mb-6">
-              주문 요약
-            </h2>
-
-            {/* Cart Items */}
+          <Card className="p-6 border-2 border-[#1e7e34] sticky top-4">
+            <h2 className="text-xl font-bold text-[#1e7e34] mb-4">Order Summary</h2>
             <div className="space-y-3 mb-6 max-h-96 overflow-y-auto">
               {cartItems.map((item) => (
-                <div
-                  key={item.menuItemId}
-                  className="flex justify-between items-center pb-3 border-b"
-                >
-                  <div>
-                    <p className="font-semibold">{item.name}</p>
-                    <p className="text-sm text-gray-600">
-                      수량: {item.quantity}
-                    </p>
-                  </div>
-                  <p className="font-semibold">
+                <div key={item.menuItemId} className="flex justify-between text-sm">
+                  <span className="text-gray-700">
+                    {item.name} x {item.quantity}
+                  </span>
+                  <span className="font-medium">
                     ${(parseFloat(item.price) * item.quantity).toFixed(2)}
-                  </p>
+                  </span>
                 </div>
               ))}
             </div>
 
-            {/* Total */}
-            <div className="border-t-2 border-[#1e7e34] pt-4 mb-6">
+            <div className="border-t pt-4 mb-6">
               <div className="flex justify-between items-center mb-2">
-                <p className="text-gray-600">소계</p>
-                <p>${calculateTotal()}</p>
+                <span className="text-gray-700">Subtotal:</span>
+                <span>${calculateTotal()}</span>
               </div>
-              <div className="flex justify-between items-center mb-4">
-                <p className="text-gray-600">배달료</p>
-                <p>${orderType === "delivery" ? "5.00" : "0.00"}</p>
-              </div>
-              <div className="flex justify-between items-center text-xl font-bold text-[#1e7e34]">
-                <p>총액</p>
-                <p>
-                  $
-                  {(
-                    parseFloat(calculateTotal()) +
-                    (orderType === "delivery" ? 5 : 0)
-                  ).toFixed(2)}
-                </p>
+              <div className="flex justify-between items-center font-bold text-lg">
+                <span>Total:</span>
+                <span className="text-[#ffd700]">${calculateTotal()}</span>
               </div>
             </div>
 
-            {/* Checkout Button */}
             <Button
+              size="lg"
+              className="w-full bg-[#ffd700] hover:bg-[#ffed4e] text-[#1e7e34] font-bold"
               onClick={handleCheckout}
-              disabled={isProcessing || cartItems.length === 0}
-              className="w-full bg-[#1e7e34] hover:bg-[#0d5a1f] text-white font-bold py-3 rounded-lg transition"
+              disabled={isProcessing}
             >
               {isProcessing ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  처리 중...
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Processing...
                 </>
               ) : (
-                "결제하기"
+                "Proceed to Payment"
               )}
             </Button>
 
             <Button
-              onClick={() => setLocation("/menu")}
+              size="lg"
               variant="outline"
               className="w-full mt-3"
+              onClick={() => setLocation("/menu")}
+              disabled={isProcessing}
             >
-              계속 쇼핑하기
+              Continue Shopping
             </Button>
           </Card>
         </div>

@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO locations (name, address, phone, email, city, postalCode, isActive, displayOrder) VALUES\n('Auckland City', '39 Chancery Street, Auckland CBD, Auckland, New Zealand', '+64 9 300 1234', 'auckland@dosirock.co.nz', 'Auckland', '1010', 1, 1),\n('Northwest (Foodie Asian Supermarket)', '33-47 Northside Drive, Westgate, Auckland 0814, New Zealand', '+64 9 833 5678', 'westgate@dosirock.co.nz', 'Auckland', '0814', 1, 2),\n('Christchurch', '6 Tower Street, Hornby, Christchurch 8042, New Zealand', '+64 3 343 9999', 'christchurch@dosirock.co.nz', 'Christchurch', '8042', 1, 3);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user gPxFJrXxNiH1Q3b.root --database k7tfmHu9v4MCGpC6AsHPrQ --execute INSERT INTO locations (name, address, phone, email, city, postalCode, isActive, displayOrder) VALUES\n('Auckland City', '39 Chancery Street, Auckland CBD, Auckland, New Zealand', '+64 9 300 1234', 'auckland@dosirock.co.nz', 'Auckland', '1010', 1, 1),\n('Northwest (Foodie Asian Supermarket)', '33-47 Northside Drive, Westgate, Auckland 0814, New Zealand', '+64 9 833 5678', 'westgate@dosirock.co.nz', 'Auckland', '0814', 1, 2),\n('Christchurch', '6 Tower Street, Hornby, Christchurch 8042, New Zealand', '+64 3 343 9999', 'christchurch@dosirock.co.nz', 'Christchurch', '8042', 1, 3);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1667
+}

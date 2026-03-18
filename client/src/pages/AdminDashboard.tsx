@@ -85,19 +85,19 @@ export default function AdminDashboard() {
             <Card className="p-4 bg-gradient-to-br from-[#ffd700] to-[#ffed4e] text-[#1e7e34]">
               <p className="text-sm font-semibold">대기 중</p>
               <p className="text-3xl font-bold">
-                {allOrders?.filter((o) => o.orderStatusId === 1).length || 0}
+                {allOrders?.filter((o) => o.statusId === 1).length || 0}
               </p>
             </Card>
             <Card className="p-4 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
               <p className="text-sm text-gray-200">준비 중</p>
               <p className="text-3xl font-bold">
-                {allOrders?.filter((o) => o.orderStatusId === 3).length || 0}
+                {allOrders?.filter((o) => o.statusId === 3).length || 0}
               </p>
             </Card>
             <Card className="p-4 bg-gradient-to-br from-green-500 to-green-600 text-white">
               <p className="text-sm text-gray-200">완료</p>
               <p className="text-3xl font-bold">
-                {allOrders?.filter((o) => o.orderStatusId === 5).length || 0}
+                {allOrders?.filter((o) => o.statusId === 5).length || 0}
               </p>
             </Card>
           </div>
@@ -132,7 +132,7 @@ export default function AdminDashboard() {
                       </td>
                       <td className="py-3 px-4">
                         <select
-                          value={order.orderStatusId}
+                          value={order.statusId}
                           onChange={(e) =>
                             handleUpdateOrderStatus(
                               order.id,

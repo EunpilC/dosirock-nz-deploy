@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE `locations` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`name` varchar(255) NOT NULL,\n\t`address` text NOT NULL,\n\t`phone` varchar(20),\n\t`email` varchar(320),\n\t`city` varchar(100) NOT NULL,\n\t`postalCode` varchar(20),\n\t`latitude` decimal(10,8),\n\t`longitude` decimal(11,8),\n\t`openingHours` text,\n\t`isActive` int DEFAULT 1,\n\t`displayOrder` int DEFAULT 0,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `locations_id` PRIMARY KEY(`id`)\n);\nALTER TABLE `orders` ADD `locationId` int NOT NULL;\nALTER TABLE `orders` ADD `statusId` int NOT NULL;\nALTER TABLE `orders` DROP COLUMN `orderStatusId`;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user gPxFJrXxNiH1Q3b.root --database k7tfmHu9v4MCGpC6AsHPrQ --execute CREATE TABLE `locations` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`name` varchar(255) NOT NULL,\n\t`address` text NOT NULL,\n\t`phone` varchar(20),\n\t`email` varchar(320),\n\t`city` varchar(100) NOT NULL,\n\t`postalCode` varchar(20),\n\t`latitude` decimal(10,8),\n\t`longitude` decimal(11,8),\n\t`openingHours` text,\n\t`isActive` int DEFAULT 1,\n\t`displayOrder` int DEFAULT 0,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `locations_id` PRIMARY KEY(`id`)\n);\nALTER TABLE `orders` ADD `locationId` int NOT NULL;\nALTER TABLE `orders` ADD `statusId` int NOT NULL;\nALTER TABLE `orders` DROP COLUMN `orderStatusId`;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 4695
+}

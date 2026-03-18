@@ -1,6 +1,6 @@
 import { eq, desc, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, menuCategories, menuItems, orders, orderItems, orderStatus, galleryImages, inquiries, payments, InsertMenuCategory, InsertMenuItem, InsertOrder, InsertOrderItem, InsertGalleryImage, InsertInquiry, InsertPayment } from "../drizzle/schema";
+import { InsertUser, users, menuCategories, menuItems, orders, orderItems, orderStatus, galleryImages, inquiries, payments, locations, InsertMenuCategory, InsertMenuItem, InsertOrder, InsertOrderItem, InsertGalleryImage, InsertInquiry, InsertPayment, InsertLocation, Location } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -182,7 +182,7 @@ export async function getUserOrders(userId: number) {
 export async function updateOrderStatus(id: number, statusId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  return db.update(orders).set({ orderStatusId: statusId }).where(eq(orders.id, id));
+  return db.update(orders).set({ statusId: statusId }).where(eq(orders.id, id));
 }
 
 export async function createOrderItem(data: InsertOrderItem) {
@@ -313,4 +313,37 @@ export async function updateUserStripeCustomerId(
     .update(users)
     .set({ stripeCustomerId, updatedAt: new Date() })
     .where(eq(users.id, userId));
+}
+
+
+// Location queries
+export async function getLocations() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(locations).where(eq(locations.isActive, 1)).orderBy((l) => l.displayOrder);
+}
+
+export async function getLocationById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(locations).where(eq(locations.id, id)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function createLocation(data: InsertLocation) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(locations).values(data);
+}
+
+export async function updateLocation(id: number, data: Partial<InsertLocation>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(locations).set(data).where(eq(locations.id, id));
+}
+
+export async function deleteLocation(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(locations).set({ isActive: 0 }).where(eq(locations.id, id));
 }

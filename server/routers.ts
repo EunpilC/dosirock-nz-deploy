@@ -83,6 +83,7 @@ export const appRouter = router({
     create: protectedProcedure
       .input(
         z.object({
+          locationId: z.number(),
           orderType: z.enum(["pickup", "delivery"]),
           pickupTime: z.date().optional(),
           deliveryAddress: z.string().optional(),
@@ -103,8 +104,9 @@ export const appRouter = router({
 
         const order = await db.createOrder({
           userId: ctx.user!.id,
+          locationId: input.locationId,
           totalAmount: input.totalAmount,
-          orderStatusId: pendingStatus.id,
+          statusId: pendingStatus.id,
           orderType: input.orderType,
           pickupTime: input.pickupTime,
           deliveryAddress: input.deliveryAddress,
@@ -195,6 +197,14 @@ export const appRouter = router({
         if (ctx.user?.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
         return db.updateInquiryStatus(input.inquiryId, input.status);
       }),
+  }),
+
+  // Location routers
+  location: router({
+    all: publicProcedure.query(() => db.getLocations()),
+    getById: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(({ input }) => db.getLocationById(input.id)),
   }),
 
   // Payment router
