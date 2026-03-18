@@ -14,6 +14,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { useAuth } from "./_core/hooks/useAuth";
+import { LocationProvider } from "./contexts/LocationContext";
+import SelectLocation from "./pages/SelectLocation";
 
 function Router() {
   const { user } = useAuth();
@@ -24,6 +26,7 @@ function Router() {
       <main className="flex-1">
         <Switch>
           <Route path="/" component={Home} />
+          <Route path="/select-location" component={SelectLocation} />
           <Route path="/menu" component={Menu} />
           <Route path="/orders" component={Orders} />
           <Route path="/checkout" component={Checkout} />
@@ -45,12 +48,14 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </ThemeProvider>
+      <LocationProvider>
+        <ThemeProvider defaultTheme="light">
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </ThemeProvider>
+      </LocationProvider>
     </ErrorBoundary>
   );
 }

@@ -27,7 +27,7 @@ export default function Home() {
               <Button
                 size="lg"
                 className="bg-[#ffd700] hover:bg-[#ffed4e] text-[#1e7e34] font-bold text-lg h-14 px-8"
-                onClick={() => setLocation("/menu")}
+                onClick={() => setLocation("/select-location")}
               >
                 Order Now
                 <ArrowRight className="ml-2" size={20} />

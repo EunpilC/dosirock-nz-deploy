@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, MapPin, Edit2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
+import { useLocation as useLocationContext } from "@/contexts/LocationContext";
 
 interface CartItem {
   menuItemId: number;
@@ -17,9 +18,17 @@ interface CartItem {
 export default function Menu() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
+  const { selectedLocation, clearSelectedLocation } = useLocationContext();
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
+
+  // Redirect to location selection if no location is selected
+  useEffect(() => {
+    if (!selectedLocation) {
+      setLocation("/select-location");
+    }
+  }, [selectedLocation, setLocation]);
 
   const { data: categories } = trpc.menu.categories.useQuery();
   const { data: menuItems } = trpc.menu.itemsByCategory.useQuery(
@@ -80,6 +89,10 @@ export default function Menu() {
       window.location.href = getLoginUrl();
       return;
     }
+    if (!selectedLocation) {
+      setLocation("/select-location");
+      return;
+    }
     // Store cart in sessionStorage and navigate to checkout
     sessionStorage.setItem("cart", JSON.stringify(cart));
     setLocation("/orders");
@@ -87,6 +100,32 @@ export default function Menu() {
 
   return (
     <div className="container py-12">
+      {/* Location Header */}
+      {selectedLocation && (
+        <div className="mb-8 p-4 bg-[#1e7e34]/10 border-2 border-[#1e7e34] rounded-lg flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <MapPin className="w-6 h-6 text-[#1e7e34]" />
+            <div>
+              <p className="text-sm text-gray-600">Ordering from:</p>
+              <p className="text-lg font-bold text-[#1e7e34]">{selectedLocation.name}</p>
+              <p className="text-sm text-gray-600">{selectedLocation.address}</p>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              clearSelectedLocation();
+              setLocation("/select-location");
+            }}
+            className="border-[#1e7e34] text-[#1e7e34] hover:bg-[#1e7e34]/10"
+          >
+            <Edit2 className="w-4 h-4 mr-2" />
+            Change
+          </Button>
+        </div>
+      )}
+
       <h1 className="text-4xl font-bold text-[#1e7e34] mb-12">Menu</h1>
 
       <div className="flex gap-8">
@@ -203,7 +242,7 @@ export default function Menu() {
                     </span>
                   </div>
                   <Button
-                    className="w-full bg-[#1e7e34] hover:bg-[#0d5a1f]"
+                    className="w-full bg-[#ffd700] hover:bg-[#ffed4e] text-[#1e7e34] font-bold"
                     onClick={handleCheckout}
                   >
                     Checkout
