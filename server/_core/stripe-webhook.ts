@@ -3,7 +3,8 @@ import { Request, Response } from "express";
 import { createPayment, updatePaymentStatus, updateOrderStatus } from "../db";
 import { getOrderStatusByName } from "../db";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+const stripeKey = process.env.STRIPE_SECRET_KEY || "sk_test_mock_key";
+const stripe = new Stripe(stripeKey);
 
 /**
  * Handle Stripe webhook events

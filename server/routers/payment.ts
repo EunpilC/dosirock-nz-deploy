@@ -12,7 +12,8 @@ import {
 import { TRPCError } from "@trpc/server";
 import { createLineItemsFromOrder } from "../stripe-products";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+const stripeKey = process.env.STRIPE_SECRET_KEY || "sk_test_mock_key";
+const stripe = new Stripe(stripeKey);
 
 export const paymentRouter = router({
   /**
